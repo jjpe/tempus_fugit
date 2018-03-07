@@ -9,10 +9,9 @@ pub use chrono::{Duration, Utc};
 #[macro_export]
 macro_rules! measure {
     ($e:expr) => {{
-        use chrono::{Utc, Duration};
-        let pre = Utc::now();
+        let pre = $crate::Utc::now();
         let result = { $e };
-        let delta: Duration = Utc::now().signed_duration_since(pre);
+        let delta: $crate::Duration = Utc::now().signed_duration_since(pre);
         (result,  delta)
     }}
 }
