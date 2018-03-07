@@ -1,5 +1,7 @@
 extern crate chrono;
 
+pub use chrono::Duration;
+
 /// This macro measures the execution time of an expression,
 /// then returns a (result, duration) tuple where:
 /// - `result` is the result of executing the expression on its own
