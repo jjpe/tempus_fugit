@@ -11,7 +11,8 @@ macro_rules! measure {
     ($e:expr) => {{
         let pre = $crate::Utc::now();
         let result = { $e };
-        let delta: $crate::Duration = Utc::now().signed_duration_since(pre);
+        let post = $crate::Utc::now();
+        let delta: $crate::Duration = post.signed_duration_since(pre);
         (result,  delta)
     }}
 }
