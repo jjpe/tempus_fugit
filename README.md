@@ -1,11 +1,14 @@
 # Tempus Fugit
 
-This is a crate that operates around the concept of measuring
-the time it takes to take some action.
-
-To this end, it enables a dependent crate to do 2 things:
+This is a Rust crate that operates around the concept of measuring the time it
+takes to take some action.  Convenience is the name of the game here, and this
+end it enables a dependent crate to do 2 things:
 
 1. Measuring the wall-clock time of any expression in nanosecond[1] resolution:
+    ```toml
+    [dependencies]
+    tempus_fugit = "0.4"
+    ```
 
     ``` rust
     #[macro_use] extern crate tempus_fugit;
@@ -37,11 +40,16 @@ To this end, it enables a dependent crate to do 2 things:
 
 2. Displaying a `Measurement` in a human-readable fashion.
    There is a `Display` impl for `Measurement`, so this is as easy as
-   formatting a value with `{}`, e.g. `format!("{}", measurement)`.
+   formatting a value with e.g. `format!("{}", measurement)`.
 
 
 [1] While the accounting is in nanosecond resolution, the actual resolution may
-    be limited to courser granularity by the Operating System.
+    be limited to courser granularity by the operating system.
+
+In addition, the `Measurement` type has impls for `Ord` and `Eq`, which
+makes comparison and ordering easy, as well as impls for de/serialization
+through Serde.
+
 
 ## Documentation
 
