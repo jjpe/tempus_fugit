@@ -24,15 +24,14 @@ const NS_PER_HOUR: u64 = 60 * NS_PER_MIN;
 /// This macro measures the execution time of an expression,
 /// then returns a (result, duration) tuple where:
 /// - `result` is the result of executing the expression on its own
-/// - `duration` is a chrono::Duration.
+/// - `measurement` has type `Measurement`.
 #[macro_export]
 macro_rules! measure {
     ($e:expr) => {{
         let pre = $crate::Utc::now();
         let result = { $e };
         let post = $crate::Utc::now();
-        let delta = $crate::Measurement::from(post.signed_duration_since(pre));
-        (result,  delta)
+        (result,  $crate::Measurement::from(post.signed_duration_since(pre)))
     }}
 }
 
