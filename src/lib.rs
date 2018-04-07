@@ -2,13 +2,17 @@ extern crate chrono;
 #[macro_use] extern crate lazy_static;
 extern crate regex;
 extern crate serde;
+#[macro_use] extern crate serde_derive;
 extern crate serde_json;
 
-use regex::Regex;
+mod error;
+mod serialize;
+
+pub use error::{MeasureErr, MeasureResult};
 pub use chrono::{Duration, Utc};
-use serde::{Deserialize, Deserializer, Serialize, Serializer};
-use std::error::Error;
 use std::fmt;
+use std::ops;
+
 
 const NS_PER_US: u64   = 1e3 as u64;
 const NS_PER_MS: u64   = 1e6 as u64;
@@ -33,6 +37,7 @@ macro_rules! measure {
 }
 
 
+
 #[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord)]
 pub struct Measurement(chrono::Duration);
 
@@ -40,12 +45,22 @@ impl Measurement {
     pub fn zero() -> Self { Measurement(chrono::Duration::zero()) }
 }
 
-impl From<Measurement> for chrono::Duration {
-    fn from(m: Measurement) -> chrono::Duration { m.0 }
+impl ops::Add for Measurement {
+    type Output = MeasureResult<Measurement>;
+
+    fn add(self, rhs: Measurement) -> Self::Output {
+        let duration = self.0.checked_add(&rhs.0).ok_or(MeasureErr::Overflow)?;
+        Ok(Measurement::from(duration))
+    }
 }
 
-impl From<chrono::Duration> for Measurement {
-    fn from(d: chrono::Duration) -> Measurement { Measurement(d) }
+impl ops::Sub for Measurement {
+    type Output = MeasureResult<Measurement>;
+
+    fn sub(self, rhs: Measurement) -> Self::Output {
+        let duration = self.0.checked_sub(&rhs.0).ok_or(MeasureErr::Underflow)?;
+        Ok(Measurement::from(duration))
+    }
 }
 
 impl fmt::Display for Measurement {
@@ -106,118 +121,13 @@ impl fmt::Display for Measurement {
     }
 }
 
-impl Serialize for Measurement {
-    fn serialize<S: Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
-        let remains: chrono::Duration = self.0;
 
-        let num_days = remains.num_days();
-        let remains = remains - chrono::Duration::days(num_days);
-        let num_hours = remains.num_hours();
-        let remains = remains - chrono::Duration::hours(num_hours);
-        let num_minutes = remains.num_minutes();
-        let remains = remains - chrono::Duration::minutes(num_minutes);
-        let num_seconds = remains.num_seconds();
-        let _ = remains - chrono::Duration::seconds(num_seconds);
-
-        #[inline(always)]
-        fn add(value: i64, marker: &str, buffer: &mut String) {
-            buffer.push_str(&format!("{}", value));
-            buffer.push_str(marker);
-        };
-
-        let mut buffer = String::from("P");
-        add(num_days,    "D", &mut buffer);
-        buffer.push_str("T");
-        add(num_hours,   "H", &mut buffer);
-        add(num_minutes, "M", &mut buffer);
-        add(num_seconds, "S", &mut buffer);
-        s.serialize_str(&buffer)
-    }
+impl From<Measurement> for chrono::Duration {
+    fn from(m: Measurement) -> chrono::Duration { m.0 }
 }
 
-
-struct MeasurementVisitor;
-impl MeasurementVisitor {
-    fn strip_prefix<'s, E>(expected: &str, string: &'s str)
-                           -> Result<&'s str, E> where E: serde::de::Error {
-        if !string.starts_with(expected) {
-            let msg = format!("Invalid Measurement string: {}", string);
-            return Err(serde::de::Error::custom(msg))
-        }
-        Ok(&string[1 ..]) // Strip the expected prefix
-    }
-
-    fn parse_part<E>(mut measurement: Measurement, string: &str)
-                     -> Result<(Measurement, &str), E>
-    where E: serde::de::Error {
-        lazy_static! { static ref NUM: Regex = Regex::new(r"^(\d+)").unwrap(); }
-
-        let string = match NUM.find(string) {
-            None => string,
-            Some(m) => {
-                let num_idx = m.end();
-                let num_str = &string[.. num_idx];
-                let num = num_str.parse::<i64>().map_err(|parse_err| {
-                    serde::de::Error::custom(parse_err.description())
-                })?;
-
-                measurement = match &string[num_idx .. num_idx + 1] {
-                    "W" => Measurement(chrono::Duration::weeks(num)),
-                    "D" => Measurement(chrono::Duration::days(num)),
-                    "H" => Measurement(chrono::Duration::hours(num)),
-                    "M" => Measurement(chrono::Duration::minutes(num)),
-                    "S" => Measurement(chrono::Duration::seconds(num)),
-                    unit => {
-                        let msg = format!("Invalid date/time unit: {}", unit);
-                        return Err(serde::de::Error::custom(msg))
-                    },
-                };
-
-                &string[num_idx + 1 ..]
-            },
-        };
-
-        Ok((measurement, string))
-    }
-}
-
-impl<'de> serde::de::Visitor<'de> for MeasurementVisitor {
-    type Value = Measurement;
-
-    fn expecting(&self, formatter: &mut fmt::Formatter) -> fmt::Result {
-        formatter.write_str("a Measurement that is within range")
-    }
-
-    fn visit_str<E>(self, string: &str)
-                    -> Result<Measurement, E> where E: serde::de::Error {
-        let mut string: &str = MeasurementVisitor::strip_prefix("P", string)?;
-        let mut measurement = Measurement::zero();
-        while !string.is_empty() && !string.starts_with("T") {
-            let (d, s) = MeasurementVisitor::parse_part(measurement, string)?;
-            measurement = d;
-            string = s;
-        }
-
-        let mut string: &str = MeasurementVisitor::strip_prefix("T", string)?;
-        while !string.is_empty() {
-            let (d, s) = MeasurementVisitor::parse_part(measurement, string)?;
-            measurement = d;
-            string = s;
-        }
-
-        Ok(measurement)
-    }
-
-    fn visit_string<E>(self, string: String)
-                       -> Result<Measurement, E> where E: serde::de::Error {
-        self.visit_str(&string)
-    }
-}
-
-impl<'de> Deserialize<'de> for Measurement {
-    fn deserialize<D: Deserializer<'de>>(d: D) -> Result<Self, D::Error> {
-        d.deserialize_str(MeasurementVisitor)
-    }
+impl From<chrono::Duration> for Measurement {
+    fn from(d: chrono::Duration) -> Measurement { Measurement(d) }
 }
 
 
@@ -254,9 +164,19 @@ mod tests {
         let (hours, mins) = (Duration::hours(3), Duration::minutes(3));
         let measurement = Measurement(hours.checked_add(&mins).unwrap());
         let json_string = serde_json::to_string(&measurement)
-            .expect("failed to serialize to JSON");
-        let deserialized = serde_json::from_str(&json_string)
-            .expect("failed to deserialize from JSON");;
+            .expect("failed to serialize");
+        assert_eq!(json_string, "\"P0DT3H3M0S\"");
+    }
+
+    #[test]
+    fn deserialize() {
+        const JSON_STRING: &str = "\"P0DT3H3M0S\"";
+        println!("JSON: {}", JSON_STRING);
+        let deserialized = serde_json::from_str(&JSON_STRING)
+            .expect("failed to deserialize");
+
+        let (hours, mins) = (Duration::hours(3), Duration::minutes(3));
+        let measurement = Measurement(hours.checked_add(&mins).unwrap());
         assert_eq!(measurement, deserialized,
                    "measurement ({}) != deserialized ({})",
                    measurement, deserialized);
