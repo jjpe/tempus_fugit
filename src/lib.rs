@@ -22,7 +22,7 @@ const NS_PER_HOUR: u64 = 60 * NS_PER_MIN;
 
 
 /// This macro measures the execution time of an expression,
-/// then returns a (result, measurement) tuple where:
+/// then returns a `(result, measurement)` tuple where:
 /// - `result` is the result of executing the expression on its own
 /// - `measurement` has type `Measurement`.
 #[macro_export]
