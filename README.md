@@ -1,8 +1,8 @@
 # Tempus Fugit
 
 This is a Rust crate that operates around the concept of measuring the time it
-takes to take some action.  Convenience is the name of the game here, and this
-end it enables a dependent crate to do 2 things:
+takes to take some action.  Convenience is the name of the game here, specifically
+by empowering a dependent crate to do 2 things:
 
 1. Measuring the wall-clock time of any expression in nanosecond[1] resolution:
     ```toml
@@ -33,7 +33,7 @@ end it enables a dependent crate to do 2 things:
     }
     ```
 
-    The `measure` macro returns a tuple containing the result of executing
+    The `measure!` macro returns a tuple containing the result of executing
     an expression (in this case a block), as well as a `Measurement` which
     indicates how long the expression took to execute.
 
@@ -43,12 +43,12 @@ end it enables a dependent crate to do 2 things:
    formatting a value with e.g. `format!("{}", measurement)`.
 
 
-[1] While the accounting is in nanosecond resolution, the actual resolution may
-    be limited to courser granularity by the operating system.
-
 In addition, the `Measurement` type has impls for `Ord` and `Eq`, which
 makes comparison and ordering easy, as well as impls for de/serialization
 through Serde.
+
+[1] While the accounting is in nanosecond resolution, the actual resolution may
+    be limited to courser granularity by the operating system.
 
 
 ## Documentation
