@@ -1,13 +1,21 @@
-# Tempus Fugit
+# Tempus Fugit &emsp;  [![Latest Version]][crates.io] [![Rustc Version 1.26+]][rustc]
 
-This is a Rust crate that operates around the concept of measuring the time it
-takes to take some action.  Convenience is the name of the game here, specifically
-by empowering a dependent crate to do 2 things:
+[Latest Version]: https://img.shields.io/crates/v/tempus_fugit.svg
+[crates.io]: https://crates.io/crates/tempus_fugit
+[Rustc Version 1.26+]: https://img.shields.io/badge/rustc-1.26+-lightgray.svg
+[rustc]: https://blog.rust-lang.org/2016/11/10/Rust-1.13.html
+
+
+**This is a Rust crate that operates around the concept of measuring the time it
+takes to take some action.**
+
+Convenience is the name of the game here, specifically by empowering a dependent
+crate to do 2 things:
 
 1. Measuring the wall-clock time of any expression in nanosecond[1] resolution:
     ```toml
     [dependencies]
-    tempus_fugit = "0.4"
+    tempus_fugit = "0.5"
     ```
 
     ``` rust
@@ -43,9 +51,19 @@ by empowering a dependent crate to do 2 things:
    formatting a value with e.g. `format!("{}", measurement)`.
 
 
-In addition, the `Measurement` type has impls for `Ord` and `Eq`, which
-makes comparison and ordering easy, as well as impls for de/serialization
-through Serde.
+The `Measurement` type also has impls for `Ord` and `Eq`, which makes
+comparison and sorting easy.
+
+In addition, there is opt-in support for de/serialization through Serde.
+This is activated by using the follwing in your crate's `Cargo.toml`:
+
+``` toml
+[dependencies]
+tempus_fugit = { version = "0.5", features = ["enable_serde"] }
+
+```
+
+
 
 [1] While the accounting is in nanosecond resolution, the actual resolution may
     be limited to courser granularity by the operating system.
