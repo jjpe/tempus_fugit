@@ -65,14 +65,10 @@ impl ops::Sub for Measurement {
 
 impl fmt::Display for Measurement {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        let duration = &self.0;
-        if duration.num_nanoseconds().is_none() {
-            return write!(f, "overflow");
-        }
-
-        match duration.num_nanoseconds().unwrap() as u64 {
-            nanos if nanos < NS_PER_US => write!(f, "{} ns", nanos),
-            nanos if nanos < NS_PER_MS => {
+        match self.0.num_nanoseconds().map(|nanos| nanos as u64) {
+            None => write!(f, "overflow"),
+            Some(nanos) if nanos < NS_PER_US => write!(f, "{} ns", nanos),
+            Some(nanos) if nanos < NS_PER_MS => {
                 let micros: u64 = nanos / NS_PER_US;
                 let nanos: u64 = nanos % NS_PER_US;
                 if nanos > 0 {
@@ -81,7 +77,7 @@ impl fmt::Display for Measurement {
                     write!(f, "{} µs", micros)
                 }
             },
-            nanos if nanos < NS_PER_SEC => {
+            Some(nanos) if nanos < NS_PER_SEC => {
                 let millis: u64 = nanos / NS_PER_MS;
                 let micros: u64 = (nanos % NS_PER_MS) / NS_PER_US;
                 if micros > 0 {
@@ -90,7 +86,7 @@ impl fmt::Display for Measurement {
                     write!(f, "{} ms", millis)
                 }
             },
-            nanos if nanos < NS_PER_MIN => {
+            Some(nanos) if nanos < NS_PER_MIN => {
                 let secs: u64 = nanos / NS_PER_SEC;
                 let millis: u64 = (nanos % NS_PER_SEC) / NS_PER_MS;
                 if millis > 0 {
@@ -99,7 +95,7 @@ impl fmt::Display for Measurement {
                     write!(f, "{} s", secs)
                 }
             },
-            nanos if nanos < NS_PER_HOUR => {
+            Some(nanos) if nanos < NS_PER_HOUR => {
                 let mins: u64 = nanos / NS_PER_MIN;
                 let secs: u64 = (nanos % NS_PER_MIN) / NS_PER_SEC;
                 if secs > 0 {
@@ -108,7 +104,7 @@ impl fmt::Display for Measurement {
                     write!(f, "{} m", mins)
                 }
             },
-            nanos => {
+            Some(nanos) => {
                 let hours: u64 = nanos / NS_PER_HOUR;
                 let mins: u64 = (nanos % NS_PER_HOUR) / NS_PER_MIN;
                 if mins > 0 {
