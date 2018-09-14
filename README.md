@@ -3,7 +3,7 @@
 [Latest Version]: https://img.shields.io/crates/v/tempus_fugit.svg
 [crates.io]: https://crates.io/crates/tempus_fugit
 [Rustc Version 1.26+]: https://img.shields.io/badge/rustc-1.26+-lightgray.svg
-[rustc]: https://blog.rust-lang.org/2016/11/10/Rust-1.13.html
+[rustc]: https://nothing.here
 
 
 **This is a Rust crate that operates around the concept of measuring the time it
