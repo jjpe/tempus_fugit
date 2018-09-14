@@ -1,3 +1,8 @@
+/// This module provides de/serialization for the Measurement type.
+
+// NOTE: If `Measurement`'s chrono::Duration field should ever support
+//        proper de/serialization, this entire module can be removed.
+
 use {error, Measurement, MeasureErr};
 use chrono;
 use regex::Regex;

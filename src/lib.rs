@@ -1,12 +1,12 @@
 extern crate chrono;
-#[macro_use] extern crate lazy_static;
+#[cfg(feature = "enable_serde")] #[macro_use] extern crate lazy_static;
 extern crate regex;
-extern crate serde;
-#[macro_use] extern crate serde_derive;
-extern crate serde_json;
+#[cfg(feature = "enable_serde")] extern crate serde;
+#[cfg(feature = "enable_serde")] #[macro_use] extern crate serde_derive;
+#[cfg(feature = "enable_serde")] extern crate serde_json;
 
 mod error;
-mod serialize;
+#[cfg(feature = "enable_serde")] mod serialize;
 
 pub use error::{MeasureErr, MeasureResult};
 pub use chrono::{Duration, Utc};
@@ -37,9 +37,9 @@ macro_rules! measure {
 }
 
 
-
 #[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord)]
 pub struct Measurement(chrono::Duration);
+
 
 impl Measurement {
     pub fn zero() -> Self { Measurement(chrono::Duration::zero()) }
@@ -138,7 +138,6 @@ impl From<chrono::Duration> for Measurement {
 mod tests {
     use Measurement;
     use chrono::Duration;
-    use serde_json;
 
     #[test]
     fn readme_md_example() {
@@ -157,29 +156,6 @@ mod tests {
 
         println!("contents: {:?}", contents);
         println!("opening and reading Cargo.lock took {}", measurement);
-    }
-
-    #[test]
-    fn serialize() {
-        let (hours, mins) = (Duration::hours(3), Duration::minutes(3));
-        let measurement = Measurement(hours.checked_add(&mins).unwrap());
-        let json_string = serde_json::to_string(&measurement)
-            .expect("failed to serialize");
-        assert_eq!(json_string, "\"P0DT3H3M0S\"");
-    }
-
-    #[test]
-    fn deserialize() {
-        const JSON_STRING: &str = "\"P0DT3H3M0S\"";
-        println!("JSON: {}", JSON_STRING);
-        let deserialized = serde_json::from_str(&JSON_STRING)
-            .expect("failed to deserialize");
-
-        let (hours, mins) = (Duration::hours(3), Duration::minutes(3));
-        let measurement = Measurement(hours.checked_add(&mins).unwrap());
-        assert_eq!(measurement, deserialized,
-                   "measurement ({}) != deserialized ({})",
-                   measurement, deserialized);
     }
 
     #[test]
@@ -253,5 +229,34 @@ mod tests {
     fn format_nanoseconds_one_chunk() {
         let one_chunk = Measurement(Duration::nanoseconds(10));
         assert_eq!("10 ns", format!("{}", one_chunk));
+    }
+}
+
+#[cfg(all(test, feature = "enable_serde"))]
+mod serialization_tests {
+    use Measurement;
+    use chrono::Duration;
+    use serde_json;
+
+    #[test]
+    fn serialize() {
+        let (hours, mins) = (Duration::hours(3), Duration::minutes(3));
+        let measurement = Measurement(hours.checked_add(&mins).unwrap());
+        let json_string = serde_json::to_string(&measurement)
+            .expect("failed to serialize");
+        assert_eq!(json_string, "\"P0DT3H3M0S\"");
+    }
+
+    #[test]
+    fn deserialize() {
+        const JSON_STRING: &str = "\"P0DT3H3M0S\"";
+        println!("JSON: {}", JSON_STRING);
+        let deserialized = serde_json::from_str(&JSON_STRING)
+            .expect("failed to deserialize");
+        let (hours, mins) = (Duration::hours(3), Duration::minutes(3));
+        let measurement = Measurement(hours.checked_add(&mins).unwrap());
+        assert_eq!(measurement, deserialized,
+                   "measurement ({}) != deserialized ({})",
+                   measurement, deserialized);
     }
 }

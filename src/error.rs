@@ -1,10 +1,12 @@
-use serde;
+#[cfg(feature = "enable_serde")] use serde;
 use std::error::Error;
 use std::num::ParseIntError;
 
 
 pub type MeasureResult<T> = Result<T, MeasureErr>;
 
+
+#[cfg(feature = "enable_serde")]
 #[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord)]
 #[derive(Serialize, Deserialize)]
 pub enum MeasureErr {
@@ -13,6 +15,16 @@ pub enum MeasureErr {
     ParseIntError(IntErrorKind),
 }
 
+#[cfg(not(feature = "enable_serde"))]
+#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord)]
+pub enum MeasureErr {
+    Overflow,
+    Underflow,
+    ParseIntError(IntErrorKind),
+}
+
+
+#[cfg(feature = "enable_serde")]
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
 #[derive(Serialize, Deserialize)]
 pub enum IntErrorKind {
@@ -23,6 +35,18 @@ pub enum IntErrorKind {
     Unknown { msg: String },
 }
 
+#[cfg(not(feature = "enable_serde"))]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+pub enum IntErrorKind {
+    Empty,
+    InvalidDigit,
+    Overflow,
+    Underflow,
+    Unknown { msg: String },
+}
+
+
+#[cfg(feature = "enable_serde")]
 pub(crate) fn serde_err_from<E>(err: MeasureErr) -> E
 where E: serde::de::Error {
     serde::de::Error::custom(match err {
