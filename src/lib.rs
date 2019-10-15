@@ -6,6 +6,9 @@ extern crate regex;
 #[cfg(feature = "enable_serde")] extern crate serde_json;
 
 mod error;
+
+// TODO: If possible, replace the `serialize`
+// module with derived De/Serialize impls.
 #[cfg(feature = "enable_serde")] mod serialize;
 
 pub use error::{MeasureErr, MeasureResult};
