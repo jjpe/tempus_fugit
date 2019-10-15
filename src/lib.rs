@@ -1,12 +1,12 @@
 extern crate chrono;
-#[cfg(feature = "serde")] #[macro_use] extern crate lazy_static;
+#[cfg(feature = "enable_serde")] #[macro_use] extern crate lazy_static;
 extern crate regex;
-#[cfg(feature = "serde")] extern crate serde;
-#[cfg(feature = "serde")] #[macro_use] extern crate serde_derive;
-#[cfg(feature = "serde")] extern crate serde_json;
+#[cfg(feature = "enable_serde")] extern crate serde;
+#[cfg(feature = "enable_serde")] #[macro_use] extern crate serde_derive;
+#[cfg(feature = "enable_serde")] extern crate serde_json;
 
 mod error;
-#[cfg(feature = "serde")] mod serialize;
+#[cfg(feature = "enable_serde")] mod serialize;
 
 pub use error::{MeasureErr, MeasureResult};
 pub use chrono::{Duration, Utc};
@@ -228,7 +228,7 @@ mod tests {
     }
 }
 
-#[cfg(all(test, feature = "serde"))]
+#[cfg(all(test, feature = "enable_serde"))]
 mod serialization_tests {
     use Measurement;
     use chrono::Duration;
