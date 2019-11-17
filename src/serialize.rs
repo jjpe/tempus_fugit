@@ -3,8 +3,10 @@
 // NOTE: If `Measurement`'s chrono::Duration field should ever support
 //        proper de/serialization, this entire module can be removed.
 
-use {error, Measurement, MeasureErr};
+use crate::{Measurement, MeasureErr};
+use crate::error;
 use chrono;
+use lazy_static::lazy_static;
 use regex::Regex;
 use serde::{self, Deserialize, Deserializer, Serialize, Serializer};
 use std::fmt;

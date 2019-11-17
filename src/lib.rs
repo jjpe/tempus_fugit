@@ -1,9 +1,4 @@
-extern crate chrono;
-#[cfg(feature = "enable_serde")] #[macro_use] extern crate lazy_static;
-#[cfg(feature = "enable_serde")] extern crate regex;
-#[cfg(feature = "enable_serde")] extern crate serde;
-#[cfg(feature = "enable_serde")] #[macro_use] extern crate serde_derive;
-#[cfg(feature = "enable_serde")] extern crate serde_json;
+/// A library to measure the wall-clock time of Rust expressions.
 
 mod error;
 
@@ -135,7 +130,7 @@ impl From<chrono::Duration> for Measurement {
 
 #[cfg(test)]
 mod tests {
-    use Measurement;
+    use crate::Measurement;
     use chrono::Duration;
 
     #[test]
@@ -233,7 +228,7 @@ mod tests {
 
 #[cfg(all(test, feature = "enable_serde"))]
 mod serialization_tests {
-    use Measurement;
+    use crate::Measurement;
     use chrono::Duration;
     use serde_json;
 

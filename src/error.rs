@@ -1,4 +1,4 @@
-#[cfg(feature = "enable_serde")] use serde;
+#[cfg(feature = "enable_serde")] use serde_derive::{Deserialize, Serialize};
 use std::error::Error;
 use std::num::ParseIntError;
 
