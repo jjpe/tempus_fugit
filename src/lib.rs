@@ -1,6 +1,6 @@
 extern crate chrono;
 #[cfg(feature = "enable_serde")] #[macro_use] extern crate lazy_static;
-extern crate regex;
+#[cfg(feature = "enable_serde")] extern crate regex;
 #[cfg(feature = "enable_serde")] extern crate serde;
 #[cfg(feature = "enable_serde")] #[macro_use] extern crate serde_derive;
 #[cfg(feature = "enable_serde")] extern crate serde_json;
