@@ -126,3 +126,33 @@ impl<'de> Deserialize<'de> for Measurement {
         d.deserialize_str(MeasurementVisitor)
     }
 }
+
+
+#[cfg(test)]
+mod tests {
+    use crate::Measurement;
+    use chrono::Duration;
+    use serde_json;
+
+    #[test]
+    fn serialize() {
+        let (hours, mins) = (Duration::hours(3), Duration::minutes(3));
+        let measurement = Measurement(hours.checked_add(&mins).unwrap());
+        let json_string = serde_json::to_string(&measurement)
+            .expect("failed to serialize");
+        assert_eq!(json_string, "\"P0DT3H3M0S\"");
+    }
+
+    #[test]
+    fn deserialize() {
+        const JSON_STRING: &str = "\"P0DT3H3M0S\"";
+        println!("JSON: {}", JSON_STRING);
+        let deserialized = serde_json::from_str(&JSON_STRING)
+            .expect("failed to deserialize");
+        let (hours, mins) = (Duration::hours(3), Duration::minutes(3));
+        let measurement = Measurement(hours.checked_add(&mins).unwrap());
+        assert_eq!(measurement, deserialized,
+                   "measurement ({}) != deserialized ({})",
+                   measurement, deserialized);
+    }
+}
