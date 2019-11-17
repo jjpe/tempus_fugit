@@ -43,8 +43,8 @@ impl Serialize for Measurement {
 
 struct MeasurementVisitor;
 impl MeasurementVisitor {
-    fn strip_prefix<'s, E>(prefix: &str, string: &'s str)
-                           -> Result<&'s str, E> where E: serde::de::Error {
+    fn strip_prefix<'s, E>(prefix: &str, string: &'s str) -> Result<&'s str, E>
+    where E: serde::de::Error {
         if !string.starts_with(prefix) {
             let msg = format!("Invalid Measurement string: {}", string);
             return Err(serde::de::Error::custom(msg))
