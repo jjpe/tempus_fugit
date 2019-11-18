@@ -1,6 +1,6 @@
 [package]
 name = "tempus_fugit"
-version = "0.8.1"
+version = "0.8.2"
 authors = ["Joey Ezechiels <joey.ezechiels@gmail.com>"]
 description = "A tiny library to measure the execution time of Rust expressions, with nanosecond precision."
 license = "BSD-3-Clause"
