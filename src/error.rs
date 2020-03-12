@@ -1,5 +1,4 @@
 #[cfg(feature = "enable_serde")] use serde_derive::{Deserialize, Serialize};
-use std::error::Error;
 use std::num::ParseIntError;
 
 
@@ -67,7 +66,7 @@ where E: serde::de::Error {
 
 impl From<ParseIntError> for MeasureErr {
     fn from(err: ParseIntError) -> MeasureErr {
-        match err.description() {
+        match format!("{}", err).as_str() {
             "cannot parse integer from empty string" =>
                 MeasureErr::ParseIntError(IntErrorKind::Empty),
             "invalid digit found in string" =>
