@@ -14,7 +14,6 @@ use std::fmt;
 impl Serialize for Measurement {
     fn serialize<S: Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
         let remains: chrono::Duration = self.0;
-
         let num_days = remains.num_days();
         let remains = remains - chrono::Duration::days(num_days);
         let num_hours = remains.num_hours();
