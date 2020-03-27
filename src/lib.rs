@@ -40,24 +40,24 @@ pub struct Measurement(chrono::Duration);
 
 
 impl Measurement {
-    pub fn zero() -> Self { Measurement(chrono::Duration::zero()) }
+    pub fn zero() -> Self { Self(chrono::Duration::zero()) }
 }
 
 impl ops::Add for Measurement {
-    type Output = MeasureResult<Measurement>;
+    type Output = MeasureResult<Self>;
 
-    fn add(self, rhs: Measurement) -> Self::Output {
+    fn add(self, rhs: Self) -> Self::Output {
         let duration = self.0.checked_add(&rhs.0).ok_or(MeasureErr::Overflow)?;
-        Ok(Measurement::from(duration))
+        Ok(Self::from(duration))
     }
 }
 
 impl ops::Sub for Measurement {
-    type Output = MeasureResult<Measurement>;
+    type Output = MeasureResult<Self>;
 
-    fn sub(self, rhs: Measurement) -> Self::Output {
+    fn sub(self, rhs: Self) -> Self::Output {
         let duration = self.0.checked_sub(&rhs.0).ok_or(MeasureErr::Underflow)?;
-        Ok(Measurement::from(duration))
+        Ok(Self::from(duration))
     }
 }
 
@@ -121,7 +121,7 @@ impl From<Measurement> for chrono::Duration {
 }
 
 impl From<chrono::Duration> for Measurement {
-    fn from(d: chrono::Duration) -> Measurement { Measurement(d) }
+    fn from(d: chrono::Duration) -> Self { Self(d) }
 }
 
 
