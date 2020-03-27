@@ -3,7 +3,7 @@ name = "tempus_fugit"
 version = "0.8.2"
 authors = ["Joey Ezechiels <joey.ezechiels@gmail.com>"]
 description = "A tiny library to measure the execution time of Rust expressions, with nanosecond precision."
-license = "BSD-3-Clause"
+license = "MIT OR Apache-2.0"
 edition = "2018"
 repository = "http://github.com/jjpe/tempus_fugit"
 
