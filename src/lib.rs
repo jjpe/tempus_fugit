@@ -2,8 +2,7 @@
 
 mod error;
 
-// TODO: If possible, replace the `serialize`
-// module with derived De/Serialize impls.
+// TODO: If / When possible, replace this with derived De/Serialize impls.
 #[cfg(feature = "enable_serde")] mod serialize;
 
 pub use error::{MeasureErr, MeasureResult};
