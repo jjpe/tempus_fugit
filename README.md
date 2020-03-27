@@ -15,7 +15,7 @@ crate to do 2 things:
 1. Measuring the wall-clock time of any expression in nanosecond[1] resolution:
     ```toml
     [dependencies]
-    tempus_fugit = "0.8"
+    tempus_fugit = "0.9"
     ```
 
     ``` rust
@@ -59,7 +59,7 @@ This is activated by using the follwing in your crate's `Cargo.toml`:
 
 ``` toml
 [dependencies]
-tempus_fugit = { version = "0.8", features = ["enable_serde"] }
+tempus_fugit = { version = "0.9", features = ["enable_serde"] }
 
 ```
 
