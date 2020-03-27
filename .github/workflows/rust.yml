@@ -13,3 +13,7 @@ jobs:
       run: cargo build --verbose
     - name: Run tests
       run: cargo test --verbose
+    - name: Build (--features="enable_serde")
+      run: cargo build --verbose --features="enable_serde"
+    - name: Run tests (--features="enable_serde")
+      run: cargo test --verbose --features="enable_serde"
