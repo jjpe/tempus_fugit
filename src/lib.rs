@@ -34,7 +34,7 @@ macro_rules! measure {
 }
 
 
-#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct Measurement(chrono::Duration);
 
 
