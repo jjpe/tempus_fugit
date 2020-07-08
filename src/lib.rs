@@ -42,6 +42,10 @@ impl Measurement {
     pub fn zero() -> Self { Self(chrono::Duration::zero()) }
 }
 
+impl Default for Measurement {
+    fn default() -> Self { Self::zero() }
+}
+
 impl ops::Add for Measurement {
     type Output = MeasureResult<Self>;
 
