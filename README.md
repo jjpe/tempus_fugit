@@ -2,8 +2,8 @@
 
 ![Rust](https://github.com/jjpe/deltoid/workflows/Rust/badge.svg)
 [![](https://img.shields.io/crates/v/tempus_fugit?label=tempus_fugit)](https://crates.io/crates/tempus_fugit)
-[![](https://img.shields.io/badge/rustc-1.26+-darkcyan.svg)](-)
-[![](https://img.shields.io/crates/l/tempus_fugit)](-)
+![](https://img.shields.io/badge/rustc-1.26+-darkcyan.svg)
+![](https://img.shields.io/crates/l/tempus_fugit)
 
 ## Synopsis
 
