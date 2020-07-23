@@ -1,21 +1,22 @@
-# Tempus Fugit &emsp;  [![Latest Version]][crates.io] [![Rustc Version 1.26+]][rustc]
+# Tempus Fugit
 
-[Latest Version]: https://img.shields.io/crates/v/tempus_fugit.svg
-[crates.io]: https://crates.io/crates/tempus_fugit
-[Rustc Version 1.26+]: https://img.shields.io/badge/rustc-1.26+-lightgray.svg
-[rustc]: https://nothing.here
+![Rust](https://github.com/jjpe/deltoid/workflows/Rust/badge.svg)
+[![](https://img.shields.io/crates/v/tempus_fugit?label=tempus_fugit)](https://crates.io/crates/tempus_fugit)
+[![](https://img.shields.io/badge/rustc-1.26+-darkcyan.svg)](-)
+[![](https://img.shields.io/crates/l/tempus_fugit)](-)
 
+## Synopsis
 
-**This is a Rust crate that operates around the concept of measuring the time it
-takes to take some action.**
+This is a Rust crate that operates around the concept of measuring the time it
+takes to execute an expression.
 
-Convenience is the name of the game here, specifically by empowering a dependent
-crate to do 2 things:
+Convenience is the name of the game here, specifically by empowering a user to
+do 2 things:
 
 1. Measuring the wall-clock time of any expression in nanosecond[1] resolution:
     ```toml
     [dependencies]
-    tempus_fugit = "0.10"
+    tempus_fugit = "0.11"
     ```
 
     ``` rust
@@ -59,8 +60,7 @@ This is activated by using the follwing in your crate's `Cargo.toml`:
 
 ``` toml
 [dependencies]
-tempus_fugit = { version = "0.10", features = ["enable_serde"] }
-
+tempus_fugit = { version = "0.11", features = ["enable_serde"] }
 ```
 
 
