@@ -35,6 +35,27 @@ macro_rules! measure {
 
 
 #[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct Measured<V> {
+    pub value: V,
+    pub measurement: Measurement,
+}
+
+impl<V> std::ops::Deref for Measured<V> {
+    type Target = V;
+
+    fn deref(&self) -> &Self::Target {
+        &self.value
+    }
+}
+
+impl<V> std::ops::DerefMut for Measured<V> {
+    fn deref_mut(&mut self) -> &mut Self::Target {
+        &mut self.value
+    }
+}
+
+
+#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct Measurement(chrono::Duration);
 
 
