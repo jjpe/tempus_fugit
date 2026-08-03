@@ -16,7 +16,7 @@ do 2 things:
 1. Measuring the wall-clock time of any expression in nanosecond[1] resolution:
     ```toml
     [dependencies]
-    tempus_fugit = "0.11"
+    tempus_fugit = "0.13.0"
     ```
 
     ``` rust
