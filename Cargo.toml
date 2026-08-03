@@ -9,8 +9,7 @@ repository = "http://github.com/jjpe/tempus_fugit"
 
 [dependencies]
 chrono = { version = "0.4", features = ["wasmbind"] }
-lazy_static = "1.0"
-regex = { version = "1.0", optional = true }
+regex = { version = "1.13", optional = true }
 serde = { version = "1.0", optional = true }
 serde_derive = { version = "1.0", optional = true }
 serde_json = { version = "1.0", optional = true }
