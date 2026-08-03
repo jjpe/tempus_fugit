@@ -6,7 +6,7 @@ mod error;
 #[cfg(feature = "enable_serde")] mod serialize;
 
 pub use error::{MeasureErr, MeasureResult};
-pub use chrono::{Duration, Utc};
+pub use chrono::{TimeDelta, Utc};
 use std::fmt;
 use std::ops;
 
@@ -56,11 +56,11 @@ impl<V> std::ops::DerefMut for Measured<V> {
 
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
-pub struct Measurement(chrono::Duration);
+pub struct Measurement(chrono::TimeDelta);
 
 
 impl Measurement {
-    pub fn zero() -> Self { Self(chrono::Duration::zero()) }
+    pub fn zero() -> Self { Self(chrono::TimeDelta::zero()) }
 }
 
 impl Default for Measurement {
@@ -140,12 +140,12 @@ impl fmt::Display for Measurement {
 }
 
 
-impl From<Measurement> for chrono::Duration {
-    fn from(m: Measurement) -> chrono::Duration { m.0 }
+impl From<Measurement> for chrono::TimeDelta {
+    fn from(m: Measurement) -> chrono::TimeDelta { m.0 }
 }
 
-impl From<chrono::Duration> for Measurement {
-    fn from(d: chrono::Duration) -> Self { Self(d) }
+impl From<chrono::TimeDelta> for Measurement {
+    fn from(d: chrono::TimeDelta) -> Self { Self(d) }
 }
 
 
@@ -155,7 +155,7 @@ impl From<chrono::Duration> for Measurement {
 #[cfg(test)]
 mod tests {
     use crate::Measurement;
-    use chrono::Duration;
+    use chrono::TimeDelta;
 
     #[test]
     fn readme_md_example() {
@@ -178,74 +178,74 @@ mod tests {
 
     #[test]
     fn format_hours_one_chunk() {
-        let one_chunk = Measurement(Duration::hours(10));
+        let one_chunk = Measurement(TimeDelta::hours(10));
         assert_eq!("10 h", format!("{}", one_chunk));
     }
 
     #[test]
     fn format_hours_two_chunks() {
-        let (hours, mins) = (Duration::hours(3), Duration::minutes(3));
+        let (hours, mins) = (TimeDelta::hours(3), TimeDelta::minutes(3));
         let two_chunks = Measurement(hours.checked_add(&mins).unwrap());
         assert_eq!("3 h 3 m", format!("{}", two_chunks));
     }
 
     #[test]
     fn format_minutes_one_chunk() {
-        let one_chunk = Measurement(Duration::minutes(10));
+        let one_chunk = Measurement(TimeDelta::minutes(10));
         assert_eq!("10 m", format!("{}", one_chunk));
     }
 
     #[test]
     fn format_minutes_two_chunks() {
-        let (mins, secs) = (Duration::minutes(3), Duration::seconds(3));
+        let (mins, secs) = (TimeDelta::minutes(3), TimeDelta::seconds(3));
         let two_chunks = Measurement(mins.checked_add(&secs).unwrap());
         assert_eq!("3 m 3 s", format!("{}", two_chunks));
     }
 
     #[test]
     fn format_seconds_one_chunk() {
-        let one_chunk = Measurement(Duration::seconds(10));
+        let one_chunk = Measurement(TimeDelta::seconds(10));
         assert_eq!("10 s", format!("{}", one_chunk));
     }
 
     #[test]
     fn format_seconds_two_chunks() {
-        let (secs, millis) = (Duration::seconds(3), Duration::milliseconds(3));
+        let (secs, millis) = (TimeDelta::seconds(3), TimeDelta::milliseconds(3));
         let two_chunks = Measurement(secs.checked_add(&millis).unwrap());
         assert_eq!("3 s 3 ms", format!("{}", two_chunks));
     }
 
     #[test]
     fn format_milliseconds_one_chunk() {
-        let one_chunk = Measurement(Duration::milliseconds(10));
+        let one_chunk = Measurement(TimeDelta::milliseconds(10));
         assert_eq!("10 ms", format!("{}", one_chunk));
     }
 
     #[test]
     fn format_milliseconds_two_chunks() {
-        let millis = Duration::milliseconds(3);
-        let micros = Duration::microseconds(3);
+        let millis = TimeDelta::milliseconds(3);
+        let micros = TimeDelta::microseconds(3);
         let two_chunks = Measurement(millis.checked_add(&micros).unwrap());
         assert_eq!("3 ms 3 µs", format!("{}", two_chunks));
     }
 
     #[test]
     fn format_microseconds_one_chunk() {
-        let one_chunk = Measurement(Duration::microseconds(10));
+        let one_chunk = Measurement(TimeDelta::microseconds(10));
         assert_eq!("10 µs", format!("{}", one_chunk));
     }
 
     #[test]
     fn format_microseconds_two_chunks() {
-        let micros = Duration::microseconds(3);
-        let nanos = Duration::nanoseconds(3);
+        let micros = TimeDelta::microseconds(3);
+        let nanos = TimeDelta::nanoseconds(3);
         let two_chunks = Measurement(micros.checked_add(&nanos).unwrap());
         assert_eq!("3 µs 3 ns", format!("{}", two_chunks));
     }
 
     #[test]
     fn format_nanoseconds_one_chunk() {
-        let one_chunk = Measurement(Duration::nanoseconds(10));
+        let one_chunk = Measurement(TimeDelta::nanoseconds(10));
         assert_eq!("10 ns", format!("{}", one_chunk));
     }
 }
