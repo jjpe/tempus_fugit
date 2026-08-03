@@ -55,7 +55,7 @@ impl<V> std::ops::DerefMut for Measured<V> {
 }
 
 
-#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct Measurement(chrono::Duration);
 
 
